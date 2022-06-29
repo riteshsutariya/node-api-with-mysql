@@ -4,17 +4,21 @@ const app = express();
 const bodyParser = require('body-parser');
 const port = 3000;
 
+const dotenv=require('dotenv');
+dotenv.config();
+
 //Parses json
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //configuration of database
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'pizzadb'
+    host: process.env.DB_HOSTNAME.toString(),
+    user: process.env.DB_USERNAME.toString(),
+    password: process.env.DB_PASSWORD.toString(),
+    database: process.env.DB_DATABASENAME.toString()
 })
+// console.log(process.env);
 
 //connect to database
 db.connect((err) => {
@@ -119,7 +123,7 @@ app.delete('pizzas/:pid',(req,res)=>{
                         res.send('Something Went Wrong!');
                     }
                     else{
-
+                        
                     }
                 })
             }
