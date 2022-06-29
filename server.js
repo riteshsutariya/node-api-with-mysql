@@ -50,10 +50,16 @@ app.post('/pizzas', (req, res) => {
     let sql = `INSERT INTO pizzatb VALUES(${pizza.id},'${pizza.name}','${pizza.desc}','${pizza.type}','${pizza.image_url}')`;
     db.query(sql, pizza, (err, result) => {
         if (err) {
-            res.send('Error: ' + err);
+            console.error(err);
+            res.send('something went wrong');
         }
         else {
-            res.send(result.affectedRows + ' rows inserted.');
+            if(result.affectedRows==1)
+            {
+                res.send('pizza inserted successfully.');
+            }else{
+                res.send('pizza cpuldn\'t inserted successfully!');
+            }
         }
     })
 })
