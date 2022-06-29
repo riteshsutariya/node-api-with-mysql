@@ -18,7 +18,6 @@ const db = mysql.createConnection({
     password: process.env.DB_PASSWORD.toString(),
     database: process.env.DB_DATABASENAME.toString()
 })
-// console.log(process.env);
 
 //connect to database
 db.connect((err) => {
@@ -30,6 +29,7 @@ db.connect((err) => {
     }
 })
 
+//get all pizzas
 app.get('/pizzas', (req, res) => {
     console.log("REQ");
     let sql = 'SELECT * FROM pizzatb';
@@ -41,9 +41,9 @@ app.get('/pizzas', (req, res) => {
             res.send(results);
         }
     })
-    // res.send("SOME RESPONSE");
 });
 
+//insert pizza
 app.post('/pizzas', (req, res) => {
     let pizza = { id: null, name: req.body.name, desc: req.body.description, type: req.body.type, image_url: req.body.image_url };
     console.log(pizza);
@@ -58,6 +58,7 @@ app.post('/pizzas', (req, res) => {
     })
 })
 
+//update pizza
 app.put('/pizzas',(req,res)=>{
     let pizza = { id: req.body.id, name: req.body.name, desc: req.body.description, type: req.body.type, image_url: req.body.image_url };
     let pid=pizza.id;
@@ -99,8 +100,9 @@ app.put('/pizzas',(req,res)=>{
     })
 })
 
-app.delete('pizzas/:pid',(req,res)=>{
-    let pid=req.params.id;
+//delete pizza
+app.delete('/pizzas/:pid',(req,res)=>{
+    let pid=req.params.pid;
     let sql=`SELECT count(*) as cnt FROM pizzatb WHERE pizzaid= ${pid}`;
 
     db.query(sql,(err,result)=>{
@@ -123,14 +125,18 @@ app.delete('pizzas/:pid',(req,res)=>{
                         res.send('Something Went Wrong!');
                     }
                     else{
-                        
+                        if(result.affectedRows==1)
+                        {
+                            res.send('pizza deleted successfully.');
+                        }else{
+                            res.send('pizza couldn\'t deleted successfully!');
+                        }
                     }
                 })
             }
         }
     })    
 })
-
 
 app.use((req, res) => {
     res.send('404 | NOT FOUND');
